@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>{% block title %}Tagging Exploration{% endblock %}</title>
+
+{% load staticfiles %}
+<link href="{% static 'css/bootstrap.css' %}"rel="stylesheet" media="screen">
+<link href="{% static 'css/addressbook.css' %}"rel="stylesheet" media="screen">
+<script src="{% static 'js/bootstrap.js' %}"></script>
+<script src="http://code.jquery.com/jquery.js"></script>
+</head>
+
+<body>
+
+	<div class="navbar navbar-inverse" id="navbar-top">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </a>
+      <a class="brand">Profilapp</a>
+{% if user.is_authenticated %}
+<ul class="nav pull-right">
+      <div class="nav-collapse">
+        <ul class="nav">
+          <li><a href="{% url "addressbook_index" %}">My Address Book</a></li>
+          <li><a href="{% url "addressbook_add_group" %}">Add Group</a></li>
+          <li><a href="{% url "addressbook_add_contact" %}">Add Contact</a></li>
+	   <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown"> {{ user.username }} <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="/password/reset/">Passwort ändern</a></li>
+              <li><a href="/accounts/logout/">Ausloggen</a></li>
+            </ul>
+          </li>
+	<li><a href=""></a></li>
+        </ul>
+</ul>
+{% endif %}
+      </div><!-- /.nav-collapse -->
+    </div><!-- /.container -->
+  </div><!-- /.navbar-inner -->
+</div><!-- /.navbar -->
+
+    <div id="sidebar">
+        {% block sidebar %}{% endblock %}
+    </div>
+
+    <div id="content">
+        {% block content %}{% endblock %}
+        {% block main_content %}{% endblock %}
+    </div>
+
+{% load staticfiles %}
+ <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+  <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+  
+  
+
+  <script>
+    // very simple to use!
+    $(document).ready(function() {
+      $('.js-activated').dropdownHover().dropdown();
+    });
+  </script>
+
+
+</body>
+</html>

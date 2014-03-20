@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load uni_form_tags %}
+
+{% block extrahead %}
+
+{% endblock %}
+
+{% block content %}
+
+<h3>Add a contact group</h3>
+
+<form action="{% url "addressbook_add_group" %}" method="post" class="form-horizontal"> {% csrf_token %}
+	<fieldset>  
+      	<div class="control-group">  
+            <label class="control-label" for="id_group">Groupname</label> 
+            <div class="controls">  
+             {{ form.name }}  
+            </div>  
+          </div>
+
+<div class="form-actions">  
+	    <button class="btn btn-primary" type="submit">Add Group</button>
+    </div>
+
+</fieldset>
+</form>
+{% endblock %}

@@ -1,0 +1,373 @@
+{% extends "base.html" %}
+{% load uni_form_tags %}
+
+{% block extrahead %}
+
+{% load staticfiles %}
+<link rel="stylesheet" href="{% static 'uni_form/uni-form.css' %}" type="text/css" />
+<link rel="stylesheet" href="{% static 'uni_form/default.uni-form.css' %}" type="text/css" />
+<!-- note that there's also blue.uni-form.css and dark.uni-form.css available if you want to try changing defaults up -->
+<link rel="stylesheet" href="{% static 'css/addressbook.css' %}" type="text/css" />
+<script src="{% static 'uni_form/uni-form.jquery.js' %}" type="text/javascript"></script>
+<script>
+$(document).ready(function() {
+  // Code adapted from http://djangosnippets.org/snippets/1389/
+ 
+function updateElementIndex(el, prefix, ndx) {
+    var id_regex = new RegExp('(' + prefix + '-\\d+-)');
+    var replacement = prefix + '-' + ndx + '-';
+    if ($(el).attr("for")) $(el).attr("for", $(el).attr("for").replace(id_regex,
+ replacement));
+    if (el.id) el.id = el.id.replace(id_regex, replacement);
+    if (el.name) el.name = el.name.replace(id_regex, replacement);
+  }
+ 
+  function deleteForm(btn, prefix) {
+    var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+    //alert('formcount = ' + formCount);
+    if (formCount > 1) {
+      // Delete the item/form
+      $(btn).parents('.' + prefix).remove();
+ 
+      var forms = $('.' + prefix); // Get all the forms
+        //alert(forms.length);
+      // Update the total number of forms (1 less than before)
+      $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
+ 
+      var i = 0;
+      // Go through the forms and set their indices, names and IDs
+      for (formCount = forms.length; i < formCount; i++) {
+        $(forms.get(i)).children().children().each(function() {
+          if ( $(this).attr('type') == 'text' )
+            updateElementIndex(this, prefix, i);
+        });
+      }
+ 
+    } // End if
+    else {
+        alert("You have to enter at least one "+prefix+"!");
+    }
+    return false;
+  }
+ 
+  function addForm(btn, prefix) {
+    //alert(prefix);
+    var formCount = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+    //alert(formCount);
+    // You can only submit a maximum of 10 todo items
+    if (formCount < 3) {
+      // Clone a form (without event handlers) from the first form
+      var row = $("."+prefix+":first").clone(false).get(0);
+      // Insert it after the last form
+      $(row).append('<p class="left_wide"><a class="delete" href="#">remove</a></p>')
+      $(row).removeAttr('id').hide().insertAfter("."+prefix+":last").addClass("dot-top").slideDown(300);
+ 
+      // Remove the bits we don't want in the new row/form
+      // e.g. error messages
+      $(".errorlist", row).remove();
+      $(row).children().removeClass("error");
+ 
+      // Relabel or rename all the relevant bits
+      $(row).children().children().each(function() {
+        updateElementIndex(this, prefix, formCount);
+        $(this).val("");
+      });
+ 
+      // Add an event handler for the delete item/form link
+      $(row).find(".delete").click(function() {
+        return deleteForm(this, prefix);
+      });
+ 
+      // Update the total form count
+      $("#id_" + prefix + "-TOTAL_FORMS").val(formCount + 1);
+ 
+    } // End if
+    else {
+        var ending = '';
+        if(prefix[prefix.length-1] == 's'){
+            ending = 'es'
+        }
+        else {
+            ending = 's'
+        };
+        alert("Sorry, you can only enter a maximum of 3 " + prefix + ending + ".");
+    }
+    return false;
+  }
+ 
+  // Register the click event handlers
+  $(".add").click(function() {
+    var prefix = $(this).parent().next().next().next().next().attr('class').split(" ")[0];//$(this).parent().prev().attr("class")
+    return addForm(this, prefix);
+
+  });
+ 
+  $(".delete").click(function() {
+    var prefix = $(this).parent().parent().attr("class");
+    return deleteForm(this, prefix);
+  });
+ 
+});
+</script>
+{% endblock %}
+
+{% block content %}
+
+<form action="" method="post" class="form-horizontal"> {% csrf_token %}
+	<fieldset>  
+      	<div class="control-group">  
+            <label class="control-label" for="id_group">Group*</label> 
+            <div class="controls">  
+             {{ contact_form.group }}  
+            </div>  
+          </div>
+	<div class="control-group">  
+            <label class="control-label" for="id_last_name">Last Name*</label> 
+            <div class="controls">  
+             {{ contact_form.last_name }}  
+            </div>  
+          </div>
+     	<div class="control-group">  
+            <label class="control-label" for="id_first_name">First Name*</label> 
+            <div class="controls">  
+             {{ contact_form.first_name }}  
+            </div>  
+          </div>
+	<div class="control-group">  
+            <label class="control-label" for="id_middle_name">Middle Name</label> 
+            <div class="controls">  
+             {{ contact_form.middle_name }}  
+            </div>  
+          </div>
+	<div class="control-group">  
+            <label class="control-label" for="id_title">Title</label> 
+            <div class="controls">  
+             {{ contact_form.title }}  
+            </div>  
+          </div>
+	<div class="control-group">  
+            <label class="control-label" for="id_organization">Organization</label> 
+            <div class="controls">  
+             {{ contact_form.organization }}  
+            </div>  
+          </div>
+	<div class="control-group">  
+            <label class="control-label" for="id_url">URL</label> 
+            <div class="controls">  
+             {{ contact_form.url }}  
+            </div>  
+          </div>
+	<div class="control-group">  
+            <label class="control-label" for="id_blurb">Blurb</label> 
+            <div class="controls">  
+             {{ contact_form.blurb }}  
+            </div>  
+          </div>
+	<div class="control-group">  
+            <label class="control-label" for="id_profile_image">Profile Image</label> 
+            <div class="controls">  
+             {{ contact_form.profile_image }}  
+            </div>  
+          </div>
+	<div class="control-group">  
+            <label class="control-label" for="id_qr_image">QR Image</label> 
+            <div class="controls">  
+             {{ contact_form.qr_image }}  
+            </div>  
+          </div>
+	<div class="control-group">  
+            <label class="control-label" for="id_twitter_handle">Twitter Handle</label> 
+            <div class="controls">  
+             {{ contact_form.twitter_handle }}  
+            </div>  
+          </div>
+	<div class="form-actions">Email(s) <a href="#">Add another email</a></div>
+	<div class="control-group">  
+            <label class="control-label" for="id_email">E-Mail*</label> 
+            <div class="controls">  
+             {{ email_formset.management_form }}
+        {% for form in email_formset.forms %}
+            <div class="{{email_formset.prefix}}">
+              {{ form.email }}
+            </div>
+        {% endfor %}  
+            </div>  
+          </div>
+	<div class="control-group">  
+            <label class="control-label" for="id_type">Type*</label> 
+            <div class="controls">  
+             {{ email_formset.management_form }}
+        {% for form in email_formset.forms %}
+            <div class="{{email_formset.prefix}}">
+              {{ form.type }}
+            </div>
+        {% endfor %}  
+            </div>  
+          </div>
+	<div class="control-group">  
+            <label class="control-label" for="id_public_visible">Public Visible</label> 
+            <div class="controls">  
+             {{ email_formset.management_form }}
+        {% for form in email_formset.forms %}
+            <div class="{{email_formset.prefix}}">
+              {{ form.public_visible }}
+            </div>
+        {% endfor %}  
+            </div>  
+          </div>
+	<div class="control-group">  
+            <label class="control-label" for="id_contact_visible">Contact Visible</label> 
+            <div class="controls">  
+             {{ email_formset.management_form }}
+        {% for form in email_formset.forms %}
+            <div class="{{email_formset.prefix}}">
+              {{ form.contact_visible }}
+            </div>
+        {% endfor %}  
+            </div>  
+          </div>
+	<div class="form-actions">Phone Number(s) <a href="#">Add another phone number</a></div>
+	<div class="control-group">  
+            <label class="control-label" for="id_phone">Phone*</label> 
+            <div class="controls">  
+           {{ phone_formset.management_form }}
+        {% for form in phone_formset.forms %}
+        <div class="{{phone_formset.prefix}}">
+          {{ form.phone }}
+        </div>
+        {% endfor %} 
+            </div>  
+          </div>
+	<div class="control-group">  
+            <label class="control-label" for="id_type">Type*</label> 
+            <div class="controls">  
+           {{ phone_formset.management_form }}
+        {% for form in phone_formset.forms %}
+        <div class="{{phone_formset.prefix}}">
+          {{ form.type }}
+        </div>
+        {% endfor %} 
+            </div>  
+          </div>
+	<div class="control-group">  
+            <label class="control-label" for="id_public_visible">Public Visible</label> 
+            <div class="controls">  
+           {{ phone_formset.management_form }}
+        {% for form in phone_formset.forms %}
+        <div class="{{phone_formset.prefix}}">
+          {{ form.public_visible }}
+        </div>
+        {% endfor %} 
+            </div>  
+          </div>
+	<div class="control-group">  
+            <label class="control-label" for="id_contact_visible">Contact Visible</label> 
+            <div class="controls">  
+           {{ phone_formset.management_form }}
+        {% for form in phone_formset.forms %}
+        <div class="{{phone_formset.prefix}}">
+          {{ form.contact_visible }}
+        </div>
+        {% endfor %} 
+            </div>  
+          </div>
+	<div class="form-actions">Address(es) <a href="#">Add another address</a></div>	
+	<div class="control-group">  
+            <label class="control-label" for="id_street">Street</label> 
+            <div class="controls">  
+          {{ address_formset.management_form }}
+        {% for form in address_formset.forms %}
+        <div class="{{address_formset.prefix}}">
+          {{ form.street }}
+        </div>
+        {% endfor %} 
+            </div>  
+          </div>
+	<div class="control-group">  
+            <label class="control-label" for="id_city">City</label> 
+            <div class="controls">  
+          {{ address_formset.management_form }}
+        {% for form in address_formset.forms %}
+        <div class="{{address_formset.prefix}}">
+          {{ form.city }}
+        </div>
+        {% endfor %} 
+            </div>  
+          </div>
+	<div class="control-group">  
+            <label class="control-label" for="id_state">State</label> 
+            <div class="controls">  
+          {{ address_formset.management_form }}
+        {% for form in address_formset.forms %}
+        <div class="{{address_formset.prefix}}">
+          {{ form.state }}
+        </div>
+        {% endfor %} 
+            </div>  
+          </div>
+	<div class="control-group">  
+            <label class="control-label" for="id_country">Country</label> 
+            <div class="controls">  
+          {{ address_formset.management_form }}
+        {% for form in address_formset.forms %}
+        <div class="{{address_formset.prefix}}">
+          {{ form.country }}
+        </div>
+        {% endfor %} 
+            </div>  
+          </div>
+	<div class="control-group">  
+            <label class="control-label" for="id_zip">Zip</label> 
+            <div class="controls">  
+          {{ address_formset.management_form }}
+        {% for form in address_formset.forms %}
+        <div class="{{address_formset.prefix}}">
+          {{ form.zip }}
+        </div>
+        {% endfor %} 
+            </div>  
+          </div>
+	<div class="control-group">  
+            <label class="control-label" for="id_type">Type</label> 
+            <div class="controls">  
+          {{ address_formset.management_form }}
+        {% for form in address_formset.forms %}
+        <div class="{{address_formset.prefix}}">
+          {{ form.type }}
+        </div>
+        {% endfor %} 
+            </div>  
+          </div>
+	<div class="control-group">  
+            <label class="control-label" for="id_public_visible">Public Visible</label> 
+            <div class="controls">  
+          {{ address_formset.management_form }}
+        {% for form in address_formset.forms %}
+        <div class="{{address_formset.prefix}}">
+          {{ form.public_visible }}
+        </div>
+        {% endfor %} 
+            </div>  
+          </div>
+	<div class="control-group">  
+            <label class="control-label" for="id_contact_visible">Contact Visible</label> 
+            <div class="controls">  
+          {{ address_formset.management_form }}
+        {% for form in address_formset.forms %}
+        <div class="{{address_formset.prefix}}">
+          {{ form.contact_visible }}
+        </div>
+        {% endfor %} 
+            </div>  
+          </div>
+
+<div class="form-actions">  
+	    <button class="btn btn-primary" type="submit">Add Contact</button>
+    </div>
+
+</fieldset>
+</form>
+
+
+
+{% endblock %}

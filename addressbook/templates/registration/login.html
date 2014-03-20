@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}Log in{% endblock %}
+
+{% block content %}
+
+<h1>Log in</h1>
+
+{% if form.errors %}
+<p class="error">Please correct the errors below:</p>
+{% endif %}
+
+
+
+<form class="form-horizontal" method="post" action="?next={{ next|default:"/addressbook" }}">
+            	<fieldset>  
+          <form class="form-horizontal"> 
+	{% csrf_token %} 
+        <fieldset>
+	   {% if form.username.errors %} <span class="error">{{ form.username.errors|join:", " }}</span>{% endif %}   
+          <div class="control-group">  
+            <label class="control-label" for="id_username">Username</label> 
+            <div class="controls">  
+             {{ form.username }}  
+            </div>  
+          </div>
+	   {% if form.password.errors %} <span class="error">{{ form.password.errors|join:", " }}</span>{% endif %}  
+           <div class="control-group">  
+            <label class="control-label" for="id_password">Passwort</label>
+            <div class="controls">  
+             {{ form.password }}
+            </div>  
+          </div> 
+      <div class="form-actions">  
+            <p><input class="btn btn-primary" type="submit" value="Log in" /></p>
+	<p>{% trans "Forgot password" %}? <a href="{% url 'auth_password_reset' %}">{% trans "Reset it" %}</a>!</p>
+	<p>{% trans "Not member" %}? <a href="{% url 'registration_register' %}">{% trans "Register" %}</a>!</p>
+    </div>
+		</fieldset>
+        </form>
+
+
+
+
+
+{% endblock %}
+
+{% block content-related %}
+
+{% endblock %}
