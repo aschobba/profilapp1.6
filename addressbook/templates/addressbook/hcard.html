@@ -5,6 +5,7 @@
     {% else %}
     <span class="fn n">
     {% endif %}
+	{% if contact.title %}<span class="title">{{ contact.title}}</span>{% endif %}
         <span class="given-name">{{ contact.first_name }}</span>
         <span class="additional-name">{{ contact.middle_name }}</span>
         <span class="family-name">{{ contact.last_name }}</span>
@@ -13,7 +14,7 @@
     {% else %}
     </span>
     {% endif %}
-{% if contact.title %}<span class="title">{{ contact.title}}</span>{% endif %}
+
 {% if contact.organization %}<div class="org">{{ contact.organization }}</div>{% endif %}
     <br clear="all" />
     {% for email in emails %}

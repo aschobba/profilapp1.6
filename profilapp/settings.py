@@ -164,7 +164,7 @@ INSTALLED_APPS = (
     'uni_form',
     'registration',
     'localflavor',
-    'django_facebook',
+    #'django_facebook',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )

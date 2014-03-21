@@ -1,6 +1,4 @@
 django-addressbook==0.1.1
-django-localflavor-de==1.0
-django-localflavor-us==1.1
 django-registration==1.0
 Django==1.6.2
 Pillow==2.3.0
